@@ -1,6 +1,3 @@
-Here’s the complete README rewritten in Markdown:
-
-```markdown
 # Spam Checker REST API
 
 ## 📍 Overview
