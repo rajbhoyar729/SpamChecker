@@ -69,12 +69,6 @@ TEMPLATES = [
     },
 ]
 
-PASSWORD_HASHERS = [
-    'django.contrib.auth.hashers.Argon2PasswordHasher',
-    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
-    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
-    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
-]
 
 WSGI_APPLICATION = 'spam_checker.wsgi.application'
 
@@ -142,8 +136,11 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.AnonRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'user': '100/hour',
-        'anon': '10/hour',
+        'user': '230/hour',
         },
 }
 
+TEST_RUNNER = "pytest_django.runner.DiscoverRunner"
+
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "spam_checker.settings")

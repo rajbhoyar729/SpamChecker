@@ -1,170 +1,183 @@
-# Spam Checker REST API
-
-## 📍 Overview
-
-Spam Checker is a REST API built using Django REST Framework. It serves as the backend for a mobile application that helps users identify spam phone numbers and perform reverse lookups by phone number or name. The API supports user registration, contact management, spam reporting, and search functionality while ensuring secure and scalable operations.
 
 ---
 
-## 👾 Features
+# **Spam Checker API**
 
-1. **User Authentication**:
-   - Registration with phone, name, password, and optional email.
-   - Token-based authentication using JWT (access and refresh tokens).
+## 📖 **Overview**
 
-2. **Contact Management**:
-   - Users can manage their personal contacts.
-   - Automatically links uploaded contacts to the global database.
+The **Spam Checker API** is a Django-based REST API that allows users to:
+- Register and log in securely using phone-based authentication.
+- Manage personal contacts and mark phone numbers as spam.
+- Search for users by name or phone number.
+- Access spam likelihood data to identify potential spam callers.
 
-3. **Spam Reporting**:
-   - Mark any phone number as spam.
-   - Calculate the likelihood of a number being spam based on user reports.
-
-4. **Search Functionality**:
-   - **By Name**: Search for users or contacts by name with priority on exact matches.
-   - **By Phone Number**: Look up users or contacts based on phone numbers.
-
-5. **Secure API**:
-   - All endpoints require authentication.
-   - Email visibility restrictions based on user relationships.
-
-6. **Database Population**:
-   - Script for generating random users, contacts, and spam reports for testing purposes.
+This application is built using the **Django REST Framework (DRF)** and utilizes **JWT tokens** for secure API access.
 
 ---
 
-## 📁 Project Structure
+## 🎯 **Features**
 
-```plaintext
-spam_checker/
-├── Pipfile                 # Dependency management
-├── Pipfile.lock            # Dependency lockfile
-├── README.md               # Project documentation
-├── api/                    # Main app folder
-│   ├── models.py           # Database models
-│   ├── serializers.py      # API serializers
-│   ├── views.py            # API views
-│   ├── urls.py             # API endpoints
-│   ├── tests.py            # Automated tests
-│   ├── migrations/         # Database migrations
-├── spam_checker/           # Project settings and WSGI configuration
-│   ├── settings.py         # Project settings
-│   ├── urls.py             # Root URL configuration
-│   ├── wsgi.py             # WSGI configuration
-│   ├── asgi.py             # ASGI configuration
-├── db.sqlite3              # SQLite database (development only)
-├── manage.py               # Django management script
-├── populate_db.py          # Script to populate database with sample data
-```
+### **Authentication**
+- **User Registration**: Register using phone, name, password, and optional email.
+- **Token-based Login**: Obtain access and refresh tokens using JWT.
+
+### **Contact Management**
+- Add, view, and manage personal contacts.
+- Spam reporting: Mark phone numbers as spam and calculate spam likelihood based on reports.
+
+### **Search**
+- **Search by Name**: Look up users by their names.
+- **Search by Phone Number**: Retrieve user details using a phone number.
+
+### **Spam Likelihood**
+- Displays the likelihood of a phone number being spam based on user feedback.
 
 ---
 
-## 🚀 Getting Started
+## 🛠️ **Tech Stack**
 
-### ☑️ Prerequisites
+- **Backend**: Django, Django REST Framework
+- **Authentication**: djangorestframework-simplejwt
+- **Database**: SQLite (development)
 
+---
+
+## 🚀 **Setup Instructions**
+
+### **Prerequisites**
 - Python 3.8+
--django for backend
-- Pipenv for dependency management
+- Pipenv (for dependency management)
 
----
+### **Installation**
 
-### ⚙️ Installation
-
-1. Clone the repository:
+1. **Clone the repository**:
    ```bash
-   git clone <repository-url>![git@github.com:rajbhoyar729/SpamChecker.git]
-   cd spam_checker
+   git clone <repository-url>
+   cd  SpamChecker
    ```
 
-2. Install dependencies using Pipenv:
+2. **Install dependencies**:
    ```bash
    pipenv install
    ```
 
-3. Activate the virtual environment:
+3. **Activate the virtual environment**:
    ```bash
    pipenv shell
    ```
 
-4. Apply migrations:
+4. **Run migrations**:
    ```bash
    python manage.py makemigrations
    python manage.py migrate
    ```
 
-5. Start the development server:
+5. **Start the development server**:
    ```bash
    python manage.py runserver
    ```
 
 ---
 
-### 🤖 Usage
+## 📄 **API Documentation**
 
-- **Register a User**:
-  ```bash
-  curl -X POST http://127.0.0.1:8000/api/register/ \
-       -H "Content-Type: application/json" \
-       -d '{"name": "John Doe", "phone": "1234567890", "password": "password123"}'
-  ```
+### **Endpoints**
 
-- **Login**:
-  ```bash
-  curl -X POST http://127.0.0.1:8000/api/login/ \
-       -H "Content-Type: application/json" \
-       -d '{"phone": "1234567890", "password": "password123"}'
-  ```
+#### **Authentication**
+1. **Register**: `/api/register/` (POST)
+   ```json
+   {
+       "name": "John Doe",
+       "phone": "1234567890",
+       "password": "password123",
+       "email": "john@example.com"
+   }
+   ```
 
-- **Search by Name**:
-  ```bash
-  curl -X GET "http://127.0.0.1:8000/api/search/name/?name=John" \
-       -H "Authorization: Bearer <access_token>"
-  ```
+2. **Login**: `/api/login/` (POST)
+   ```json
+   {
+       "phone": "1234567890",
+       "password": "password123"
+   }
+   ```
 
-- **Search by Phone**:
-  ```bash
-  curl -X GET "http://127.0.0.1:8000/api/search/phone/1234567890/" \
-       -H "Authorization: Bearer <access_token>"
-  ```
+   **Response**:
+   ```json
+   {
+       "refresh": "<refresh_token>",
+       "access": "<access_token>"
+   }
+   ```
+
+#### **Contact Management**
+1. **Add Contact**: `/api/contacts/` (POST, Auth Required)
+   ```json
+   {
+       "name": "Jane Doe",
+       "phone": "9876543210"
+   }
+   ```
+
+2. **View Contacts**: `/api/contacts/` (GET, Auth Required)
+
+#### **Spam Reporting**
+1. **Mark Spam**: `/api/spam/` (POST, Auth Required)
+   ```json
+   {
+       "phone": "9876543210",
+       "is_spam": true
+   }
+   ```
+
+#### **Search**
+1. **Search by Name**: `/api/search/name/` (GET, Auth Required)
+   - Query Parameter: `?name=Jane`
+
+2. **Search by Phone Number**: `/api/search/phone/` (GET, Auth Required)
+   - Query Parameter: `?phone=9876543210`
 
 ---
 
-### 🧪 Testing
+## 🧪 **Testing**
 
-Run the test suite using pytest:
-```bash
-pipenv run pytest
+1. **Run Tests**:
+   ```bash
+   pytest
+   ```
+
+2. **Test Scenarios**:
+   - User registration and login.
+   - Token-based authentication.
+   - Contact management and spam reporting.
+   - Search functionality (name and phone).
+
+---
+
+## 📌 **Project Structure**
+
+```plaintext
+instahyre_hiring_challenge/
+├── api/                    # Main app folder
+│   ├── models.py           # Database models
+│   ├── serializers.py      # API serializers
+│   ├── views.py            # API views
+│   ├── urls.py             # API routes
+│   ├── tests.py            # Automated tests
+├── spam_checker/           # Project settings and configuration
+│   ├── settings.py         # Django settings
+│   ├── urls.py             # Root URL configurations
+├── Pipfile                 # Dependency manager
+├── Pipfile.lock            # Dependency lock file
+├── README.md               # Project documentation
+├── manage.py               # Django management script
+└── db.sqlite3              # SQLite database (development)
 ```
 
 ---
 
-## 📌 Roadmap
+## 🎗 **License**
 
-- Add role-based access controls.
-- Introduce caching for spam likelihood calculations.
-- Enhance search with fuzzy matching.
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
 
 ---
-
-## 🔰 Contributing
-
-1. Fork the repository and create a new branch:
-   ```bash
-   git checkout -b feature-name
-   ```
-
-2. Make your changes and commit them:
-   ```bash
-   git commit -m "Description of feature"
-   ```
-
-3. Push to your fork and submit a pull request.
-
----
-
-## 🎗 License
-
-This project is licensed under [MIT License](https://choosealicense.com/licenses/mit/).
-```
-

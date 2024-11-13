@@ -1,3 +1,5 @@
+from rest_framework.viewsets import ModelViewSet
+from api.models import User
 from django.db.models import Count
 from rest_framework.exceptions import NotFound
 from django.db.models import Q
@@ -5,6 +7,8 @@ from rest_framework.views import APIView
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import User ,Contact,SpamReport
 from .serializers import RegisterSerializer, UserSerializer, UpdateProfileSerializer ,ContactSerializer, CreateContactSerializer,SpamReportSerializer,SearchResultSerializer,PhoneSearchResultSerializer,ContactSearchResultSerializer,ContactDetailSerializer,UserDetailSerializer
 
@@ -132,3 +136,19 @@ class ViewDetailsView(APIView):
 
         # If neither found, return a 404 error
         raise NotFound("Details not found.")
+    
+
+
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        # Add custom claims
+        token['name'] = user.name
+        return token
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+

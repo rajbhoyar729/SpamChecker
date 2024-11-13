@@ -13,6 +13,8 @@ django = "*"
 djangorestframework-simplejwt = "*"
 faker = "*"
 django-ratelimit = "*"
+pytest-django = "*"
+argon2 = "*"
 
 [dev-packages]
 
